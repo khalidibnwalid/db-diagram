@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useUIStore } from '../stores/useUIStore';
 import { useGraphStore } from '../stores/useGraphStore';
 
@@ -8,6 +8,23 @@ export function SearchBar() {
     const focusedNodeId = useUIStore((state) => state.focusedNodeId);
     const updateHighlights = useGraphStore((state) => state.updateHighlights);
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (
+                document.activeElement?.tagName === 'INPUT' ||
+                document.activeElement?.tagName === 'TEXTAREA'
+            ) return;
+
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey)
+                inputRef.current?.focus();
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         updateHighlights(focusedNodeId, e.target.value);
@@ -16,6 +33,7 @@ export function SearchBar() {
     return (
         <div className="absolute top-6 right-6 z-20 rounded-xl border border-border shadow-lg p-1 bg-panel">
             <input
+                ref={inputRef}
                 type="text"
                 placeholder="Search tables..."
                 value={searchQuery}
