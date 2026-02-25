@@ -1,75 +1,37 @@
-# React + TypeScript + Vite
+# DB Graph Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, fast, and easy-to-use database visualization tool built quickly (mostly vibecoded!) to solve the problem of clunky and bad MS SQL database visualizers.
 
-Currently, two official plugins are available:
+## Why this exists
+I was frustrated with the built-in MS SQL visualizers that were either too slow or too clunky. I just wanted a simple graph to look at my database, understand its structure, and see how everything connects. So, I vibecoded this project, tried to optimize it as much as possible, tried to organize, used it and added what-ever feature my muscle memory needed.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Usage
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Export your MS SQL tables and relationships as a CSV  from this command.
+```sql
+SELECT 
+    KCU1.TABLE_NAME AS 'Child_Table', 
+    KCU1.COLUMN_NAME AS 'Child_Column', 
+    KCU2.TABLE_NAME AS 'Parent_Table', 
+    KCU2.COLUMN_NAME AS 'Parent_Column',
+    RC.CONSTRAINT_NAME AS 'Relationship_Name'
+FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS RC
+INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU1 
+    ON RC.CONSTRAINT_NAME = KCU1.CONSTRAINT_NAME
+INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2 
+    ON RC.UNIQUE_CONSTRAINT_NAME = KCU2.CONSTRAINT_NAME
+    AND KCU1.ORDINAL_POSITION = KCU2.ORDINAL_POSITION
+ORDER BY Child_Table;
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+note that it will accept any csv file with the following columns:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Child_Table
+- Child_Column
+- Parent_Table
+- Parent_Column
+- Relationship_Name
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+or if no header is present, it will accept any csv file with the aforesaid columns in order.
+
+2. Load the CSV file into the application.
