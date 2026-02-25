@@ -21,7 +21,7 @@ export const useUIStore = create<UIState>((set) => ({
     searchQuery: '',
     isDarkMode: (() => {
         const savedTheme = localStorage.getItem('db-graph-theme');
-        return savedTheme ? savedTheme === 'dark' : true;
+        return savedTheme ? savedTheme === 'dark' : false;
     })(),
 
     setError: (error) => set({ error }),

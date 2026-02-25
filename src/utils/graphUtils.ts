@@ -1,8 +1,8 @@
 import dagre from 'dagre';
 import type { Node, Edge } from '@xyflow/react';
 
-export const nodeWidth = 200;
-export const nodeHeight = 50;
+export const NODE_WIDTH = 300;
+export const NODE_HEIGHT = 50;
 
 export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR') => {
     const dagreGraph = new dagre.graphlib.Graph();
@@ -18,7 +18,7 @@ export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR')
     });
 
     nodes.forEach((node) => {
-        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+        dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
     });
 
     edges.forEach((edge) => {
@@ -34,8 +34,8 @@ export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR')
             targetPosition: 'left' as any,
             sourcePosition: 'right' as any,
             position: {
-                x: nodeWithPosition.x - nodeWidth / 2,
-                y: nodeWithPosition.y - nodeHeight / 2,
+                x: nodeWithPosition.x - NODE_WIDTH / 2,
+                y: nodeWithPosition.y - NODE_HEIGHT / 2,
             },
         };
     });
@@ -44,19 +44,19 @@ export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR')
 };
 
 const GRAPH_COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#f59e0b',
-    '#8b5cf6',
-    '#ec4899',
-    '#06b6d4',
-    '#f43f5e',
-    '#84cc16',
+    'var(--graph-color-1)',
+    'var(--graph-color-2)',
+    'var(--graph-color-3)',
+    'var(--graph-color-4)',
+    'var(--graph-color-5)',
+    'var(--graph-color-6)',
+    'var(--graph-color-7)',
+    'var(--graph-color-8)',
 ];
 
 export const getGroupColor = (tableName: string) => {
     const prefix = tableName.split('_')[0];
-    if (!prefix) return '#94a3b8';
+    if (!prefix) return 'var(--graph-default)';
     let hash = 0;
     for (let i = 0; i < prefix.length; i++) {
         hash = prefix.charCodeAt(i) + ((hash << 5) - hash);
@@ -64,14 +64,14 @@ export const getGroupColor = (tableName: string) => {
     return GRAPH_COLORS[Math.abs(hash) % GRAPH_COLORS.length];
 };
 
-export const defaultNodeStyle = {
+export const defaultNodeStyle: React.CSSProperties = {
     border: 'none',
-    borderRadius: '8px',
-    padding: '15px',
-    fontSize: '14px',
+    borderRadius: '16px',
+    padding: '20px',
+    fontSize: '16px',
     fontWeight: '600',
     color: '#ffffff',
-    width: nodeWidth,
+    minWidth: NODE_WIDTH,
     textAlign: 'center' as const,
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     opacity: 1,
@@ -79,7 +79,7 @@ export const defaultNodeStyle = {
 };
 
 export const defaultEdgeStyle = {
-    stroke: '#94a3b8',
+    stroke: 'var(--graph-default)',
     strokeWidth: 2,
     transition: 'all 0.3s ease',
 };

@@ -13,10 +13,7 @@ export interface CsvRow {
     Relationship_Name: string;
 }
 
-export const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
+export const parseFile = (file: File) => {
     const { setError, setHasImported, setFocusedNodeId, setSearchQuery } = useUIStore.getState();
     const { setNodes, setEdges } = useGraphStore.getState();
 
@@ -117,4 +114,10 @@ export const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => 
             setError(`Error parsing CSV: ${error.message}`);
         }
     });
+};
+
+export const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    parseFile(file);
 };

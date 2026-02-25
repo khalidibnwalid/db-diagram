@@ -31,7 +31,7 @@ export function SearchBar() {
     };
 
     return (
-        <div className="absolute top-6 right-6 z-20 rounded-xl border border-border shadow-lg p-1 bg-panel">
+        <div className="absolute top-3 right-3 z-20 rounded-xl border border-border shadow-lg p-1 bg-panel">
             <input
                 ref={inputRef}
                 type="text"

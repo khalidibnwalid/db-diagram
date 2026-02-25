@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { HelpCircle, X, Copy, Check } from 'lucide-react';
 
 const SQL_COMMAND = `SELECT 
@@ -15,7 +15,7 @@ INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2
     AND KCU1.ORDINAL_POSITION = KCU2.ORDINAL_POSITION
 ORDER BY Child_Table;`;
 
-export function SQLHelpDialog() {
+export function SQLHelpDialog({ children }: { children?: ReactNode }) {
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -27,14 +27,20 @@ export function SQLHelpDialog() {
 
     return (
         <>
-            <button
-                onClick={() => setIsHelpOpen(true)}
-                className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-muted text-foreground border border-border rounded-lg text-[15px] font-medium cursor-pointer hover:bg-border/50 transition-colors"
-                title="How to extract relationships?"
-            >
-                <HelpCircle size={18} />
-                <span>How to extract Schema?</span>
-            </button>
+            {children ? (
+                <div onClick={() => setIsHelpOpen(true)} className="inline-flex cursor-pointer" title="How to extract relationships?">
+                    {children}
+                </div>
+            ) : (
+                <button
+                    onClick={() => setIsHelpOpen(true)}
+                    className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-muted text-foreground border border-border rounded-lg text-[15px] font-medium cursor-pointer hover:bg-border/50 transition-colors"
+                    title="How to extract relationships?"
+                >
+                    <HelpCircle size={18} />
+                    <span>How to extract Schema?</span>
+                </button>
+            )}
 
             {isHelpOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
