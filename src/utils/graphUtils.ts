@@ -1,15 +1,14 @@
 import dagre from 'dagre';
-import type { Node, Edge } from '@xyflow/react';
 
 export const NODE_WIDTH = 300;
 export const NODE_HEIGHT = 50;
 
-export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR') => {
+export const applyDagreLayout = (nodes: any[], edges: any[]) => {
     const dagreGraph = new dagre.graphlib.Graph();
     dagreGraph.setDefaultEdgeLabel(() => ({}));
 
     dagreGraph.setGraph({
-        rankdir: direction,
+        rankdir: 'LR',
         nodesep: 60,
         ranksep: 200,
         edgesep: 20,
@@ -18,25 +17,23 @@ export const applyDagreLayout = (nodes: Node[], edges: Edge[], direction = 'LR')
     });
 
     nodes.forEach((node) => {
-        dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
+        dagreGraph.setNode(node.id!, { width: NODE_WIDTH, height: NODE_HEIGHT });
     });
 
     edges.forEach((edge) => {
-        dagreGraph.setEdge(edge.source, edge.target);
+        const sourceId = typeof edge.source === 'object' ? edge.source.cell : edge.source;
+        const targetId = typeof edge.target === 'object' ? edge.target.cell : edge.target;
+        dagreGraph.setEdge(sourceId, targetId);
     });
 
     dagre.layout(dagreGraph);
 
     const newNodes = nodes.map((node) => {
-        const nodeWithPosition = dagreGraph.node(node.id);
+        const nodeWithPosition = dagreGraph.node(node.id!);
         return {
             ...node,
-            targetPosition: 'left' as any,
-            sourcePosition: 'right' as any,
-            position: {
-                x: nodeWithPosition.x - NODE_WIDTH / 2,
-                y: nodeWithPosition.y - NODE_HEIGHT / 2,
-            },
+            x: nodeWithPosition.x - NODE_WIDTH / 2,
+            y: nodeWithPosition.y - NODE_HEIGHT / 2,
         };
     });
 
@@ -64,22 +61,28 @@ export const getGroupColor = (tableName: string) => {
     return GRAPH_COLORS[Math.abs(hash) % GRAPH_COLORS.length];
 };
 
-export const defaultNodeStyle: React.CSSProperties = {
-    border: 'none',
-    borderRadius: '16px',
-    padding: '20px',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#ffffff',
-    minWidth: NODE_WIDTH,
-    textAlign: 'center' as const,
-    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    opacity: 1,
-    transition: 'all 0.3s ease',
+export const defaultEdgeStyle = {
+    line: {
+        stroke: 'var(--color-edge-inactive)',
+        strokeWidth: 2,
+        targetMarker: {
+            name: 'block',
+            width: 12,
+            height: 8,
+            fill: 'var(--color-edge-inactive)',
+        },
+    }
 };
 
-export const defaultEdgeStyle = {
-    stroke: 'var(--graph-default)',
-    strokeWidth: 2,
-    transition: 'all 0.3s ease',
+export const activeEdgeStyle = {
+    line: {
+        stroke: 'var(--color-edge-active)',
+        strokeWidth: 3,
+        targetMarker: {
+            name: 'block',
+            width: 12,
+            height: 8,
+            fill: 'var(--color-edge-active)',
+        },
+    }
 };

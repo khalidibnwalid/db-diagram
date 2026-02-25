@@ -33,7 +33,7 @@
   --border-color: #e5e7eb;
   --panel-bg: #ffffff;
   --edge-active: #9ca3af;
-  --edge-inactive: #f3f4f6;
+  --edge-inactive: #94a3b8;
 
   --graph-color-1: #005BC4;
   --graph-color-2: #17C964;
@@ -54,14 +54,12 @@
   --border-color: #374151;
   --panel-bg: #1f2937;
   --edge-active: #6b7280;
-  --edge-inactive: #374151;
+  --edge-inactive: #6b7280;
   color-scheme: dark;
 }
 
 body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
   background-color: var(--bg);
   color: var(--fg);
 }

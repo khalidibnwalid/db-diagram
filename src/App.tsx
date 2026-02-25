@@ -3,7 +3,6 @@ import { handleFileUpload } from './utils/csvParser';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { EmptyState } from './components/EmptyState';
-import '@xyflow/react/dist/style.css';
 
 function App() {
   const isDarkMode = useUIStore((state) => state.isDarkMode);

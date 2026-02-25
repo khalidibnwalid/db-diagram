@@ -1,9 +1,7 @@
 import Papa from 'papaparse';
 import { useGraphStore } from '../stores/useGraphStore';
 import { useUIStore } from '../stores/useUIStore';
-import { applyDagreLayout, getGroupColor, defaultNodeStyle, defaultEdgeStyle } from './graphUtils';
-import type { Node, Edge } from '@xyflow/react';
-import { MarkerType } from '@xyflow/react';
+import { applyDagreLayout, getGroupColor, defaultEdgeStyle, NODE_WIDTH, NODE_HEIGHT } from './graphUtils';
 
 export interface CsvRow {
     Child_Table: string;
@@ -15,7 +13,7 @@ export interface CsvRow {
 
 export const parseFile = (file: File) => {
     const { setError, setHasImported, setFocusedNodeId, setSearchQuery } = useUIStore.getState();
-    const { setNodes, setEdges } = useGraphStore.getState();
+    const { setGraphData } = useGraphStore.getState();
 
     Papa.parse<string[]>(file, {
         header: false,
@@ -75,37 +73,43 @@ export const parseFile = (file: File) => {
                 if (row.Parent_Table) uniqueNodes.add(row.Parent_Table);
             });
 
-            const initialNodes: Node[] = Array.from(uniqueNodes).map((nodeId) => ({
+            const initialNodes: any[] = Array.from(uniqueNodes).map((nodeId) => ({
                 id: nodeId,
+                shape: 'custom-node',
+                size: { width: NODE_WIDTH, height: NODE_HEIGHT },
+                zIndex: 10,
                 data: { label: nodeId, baseColor: getGroupColor(nodeId) },
-                position: { x: 0, y: 0 },
-                style: {
-                    ...defaultNodeStyle,
-                    background: getGroupColor(nodeId)
-                },
             }));
 
-            const initialEdges: Edge[] = data.map((row, index) => ({
+            const initialEdges: any[] = data.map((row, index) => ({
                 id: `e-${row.Parent_Table}-${row.Child_Table}-${index}`,
-                source: row.Parent_Table,
-                target: row.Child_Table,
-                label: row.Relationship_Name,
-                animated: true,
-                markerEnd: {
-                    type: MarkerType.ArrowClosed,
-                    width: 20,
-                    height: 20,
-                    color: '#94a3b8',
-                },
-                style: { ...defaultEdgeStyle },
-                labelStyle: { fill: '#64748b', fontWeight: 500, fontSize: 12 },
-                labelBgStyle: { fill: '#f8fafc', color: '#f8fafc', fillOpacity: 0.8 },
+                source: { cell: row.Parent_Table, anchor: 'right', connectionPoint: 'anchor' },
+                target: { cell: row.Child_Table, anchor: 'left', connectionPoint: 'anchor' },
+                connector: { name: 'smooth' },
+                attrs: defaultEdgeStyle,
+                zIndex: 1,
+                labels: [
+                    {
+                        attrs: {
+                            label: {
+                                text: row.Relationship_Name,
+                                fill: 'var(--muted-fg)',
+                                fontSize: 12,
+                                fontWeight: 500,
+                            },
+                            body: {
+                                fill: 'var(--panel-bg)',
+                                stroke: 'none',
+                                fillOpacity: 0.8,
+                            }
+                        },
+                    }
+                ],
             }));
 
             const { nodes: layoutedNodes, edges: layoutedEdges } = applyDagreLayout(initialNodes, initialEdges);
 
-            setNodes(layoutedNodes);
-            setEdges(layoutedEdges);
+            setGraphData(layoutedNodes, layoutedEdges);
             setHasImported(true);
             setFocusedNodeId(null);
             setSearchQuery('');

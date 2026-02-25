@@ -27,7 +27,7 @@ export function SearchBar() {
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
-        updateHighlights(focusedNodeId, e.target.value);
+        updateHighlights(focusedNodeId);
     };
 
     return (
