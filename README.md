@@ -1,5 +1,7 @@
 # DB Graph Visualizer
 
+![preview](./docs/preview.gif)
+
 A lightweight, fast, and easy-to-use database visualization tool built quickly (mostly vibecoded!) to solve the problem of clunky and bad MS SQL database visualizers.
 
 ## Why this exists
@@ -7,7 +9,8 @@ I was frustrated with the built-in MS SQL visualizers that were either too slow 
 
 ## Usage
 
-1. Export your MS SQL tables and relationships as a CSV  from this command.
+### MSSQL:
+ Export your MS SQL tables and relationships as a CSV  from this command.
 ```sql
 SELECT 
     KCU1.TABLE_NAME AS 'Child_Table', 
@@ -24,6 +27,14 @@ INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2
 ORDER BY Child_Table;
 ```
 
+### SQLITE:
+don't forget to update the path to your database.
+```bash
+sqlite3 -header -csv [your_database.db] "SELECT m.name AS Child_Table, p.\\"from\\" AS Child_Column, p.\\"table\\" AS Parent_Table, p.\\"to\\" AS Parent_Column, 'fk_' || m.name || '_' || p.\\"id\\" AS Relationship_Name FROM sqlite_schema AS m JOIN pragma_foreign_key_list(m.name) AS p WHERE m.type = 'table' ORDER BY Child_Table;" > [relationships.csv]
+```
+
+### CSV:
+
 note that it will accept any csv file with the following columns:
 
 - Child_Table
@@ -33,5 +44,3 @@ note that it will accept any csv file with the following columns:
 - Relationship_Name
 
 or if no header is present, it will accept any csv file with the aforesaid columns in order.
-
-2. Load the CSV file into the application.
