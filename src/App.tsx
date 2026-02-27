@@ -12,7 +12,7 @@ function App() {
   return (
     <DropFileProvider>
       <div
-        className={`w-screen h-screen flex flex-col m-0 p-0 transition-colors duration-300 bg-background text-foreground ${isDarkMode ? "dark" : ""}`}
+        className={`w-full h-full flex flex-col m-0 p-0 transition-colors duration-300 bg-background text-foreground ${isDarkMode ? "dark" : ""}`}
       >
         <input
           type="file"

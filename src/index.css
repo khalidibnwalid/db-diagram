@@ -62,4 +62,5 @@ body {
   margin: 0;
   background-color: var(--bg);
   color: var(--fg);
+  overflow: hidden;
 }
