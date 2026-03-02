@@ -1,4 +1,4 @@
-import { Moon, Sun, Upload, HelpCircle } from 'lucide-react';
+import { Moon, Sun, Upload, HelpCircle, Github } from 'lucide-react';
 import { useUIStore } from '../stores/useUIStore';
 import { SQLHelpDialog } from './SQLHelpDialog';
 
@@ -22,6 +22,14 @@ export function ControlsBar() {
                 {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
+           <a
+                href="https://github.com/khalidibnwalid/db-diagram"
+                target='_blank'
+                className="flex items-center justify-center size-9 rounded-lg border border-border cursor-pointer transition-colors bg-muted text-foreground hover:bg-border/50"
+            >
+                <Github size={18} />
+            </a>
+            
             <SQLHelpDialog>
                 <div className="flex items-center justify-center size-9 rounded-lg border border-border cursor-pointer transition-colors bg-muted text-foreground hover:bg-border/50 pointer-events-none">
                     <HelpCircle size={18} />
